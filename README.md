@@ -1,7 +1,7 @@
 # Text Summarization with LLMs
 
 ## Overview
-This project demonstrates the use of Hugging Face pipelines and pre-trained large language models (LLMs), such as (Phi-3), for text summarization. The script generates concise summaries for input text.
+This project demonstrates the use of Hugging Face pipelines and pre-trained large language model (LLM), such as (Phi-3), for text summarization. The script generates concise summaries for input text.
 
 ---
 
