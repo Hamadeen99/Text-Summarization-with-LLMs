@@ -1,20 +1,27 @@
 import sys
 import warnings
-warnings.filterwarnings('ignore')
-
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from langchain_huggingface import HuggingFacePipeline 
 
+
+warnings.filterwarnings('ignore')
+
 def summary_generator(text, pipeline):
+    """Generates a summary using the provided HuggingFace pipeline."""
     llm_pipeline = HuggingFacePipeline(
         pipeline=pipeline,
         model_kwargs={'temperature': 0}
     )
     summary_prompt = text
-    return llm_pipeline.invoke(summary_prompt)
+    try:
+        return llm_pipeline.invoke(summary_prompt)
+    except Exception as e:
+        print(f"Error in generating summary: {e}")
+        return None
 
 def setup_pipeline(model_name, token):
+    """Sets up the HuggingFace pipeline with the specified model."""
     tokenizer = AutoTokenizer.from_pretrained(model_name, token=token)
     try:
         model = AutoModelForCausalLM.from_pretrained(model_name, token=token)
@@ -23,7 +30,7 @@ def setup_pipeline(model_name, token):
         else:
             model = model.cpu()  
     except RuntimeError as e:
-        print("Runtime error during model loading:", e)
+        print(f"Runtime error during model loading: {e}")
         model = model.cpu()  
     
     is_cuda = next(model.parameters()).is_cuda
@@ -43,13 +50,13 @@ def setup_pipeline(model_name, token):
     )
 
 def main():
-    token = ""  # replace with your actual token
+    """Main function to demonstrate summary generation."""
+    token = ""  # Replace with your actual Hugging Face access token
     model_name = "microsoft/Phi-3-mini-4k-instruct"
     llm_pipeline = setup_pipeline(model_name, token)
 
-    context = """
-    summarize the following text between <para> and <endpara>, produce output
-    starting with <summary> and ending with <endsummary>:
+    context = """ 
+    Explain the functionality of an image processing pipeline. Structure the output starting with <summary> and ending with <endsummary>:
     <para>The purpose of the DataSet object is to contain the training and test
     data. If the total training data is small, we can read all the image pixels
     and store all images in multi-dimensional tensors in the dataset.
@@ -59,8 +66,11 @@ def main():
     Transform usually resizes the image and changes the 0-255 pixel scale to
     either 0 to 1, or -1 to 1.<endpara>
     """
+
     print(context)
-    print(summary_generator(context, llm_pipeline))
+    result = summary_generator(context, llm_pipeline)
+    if result:
+        print(result)
 
 if __name__ == "__main__":
     sys.exit(main() or 0)
