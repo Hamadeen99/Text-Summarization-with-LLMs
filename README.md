@@ -58,3 +58,8 @@ pip install -u transformers einops accelerate langchain bitsandbytes
 This project leverages:
 - Hugging Face pipelines for easy integration of state-of-the-art NLP models.
 - Pretrained models like Phi-3 for efficient summarization tasks.
+
+  ##
+This project was assigned as part of the NLP and LLM Course, instructed by Professor Ausif Mahmood.
+
+---
